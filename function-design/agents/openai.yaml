@@ -1,0 +1,4 @@
+interface:
+  display_name: "Function Design"
+  short_description: "Design and refactor clear, testable functions"
+  default_prompt: "Use $function-design to review and improve the function boundaries in this code."
