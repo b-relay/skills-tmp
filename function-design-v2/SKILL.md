@@ -11,8 +11,6 @@ Functions exist to manage complexity for limited reasoners, human or agent. A we
 2. Make the contract ask for what the body needs and a real caller can supply, and return every distinction the caller acts on.
 3. Keep the top-level statements of a body at one conceptual level. Mechanics belong behind a named function, a trusted algorithm, or a type that owns the policy.
 
-When you need every rule on one screen, before or after the steps, read [the summary](references/summary.md).
-
 ## Scope
 
 Apply the procedure to every function you create, to every existing function whose body, signature, effects, results, or failure handling you change substantially, and to the direct callers of any contract you change. On a review task, every function the user pointed at is in scope, changed or not. Other existing functions are out of scope unless the task, repository guidance, or the user says to refactor them. If new code must call an existing function that fails a step, adapt around it within scope and name the inherited debt in the report. Ask the user, once per task, only when fixing the callee would materially change the requested outcome or its cost.
