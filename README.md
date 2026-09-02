@@ -2,8 +2,7 @@
 
 Working repository for skills that change often. Each top-level directory is one skill and is symlinked into `~/.codex/skills/` and `~/.claude/skills/`.
 
-- `function-design`: v1 of the function-design skill.
-- `function-design-v2`: current revision under review.
+- `function-design`: function design with an honest, exact, testable contract. The earlier v1 skill is in git history before this rename.
 
 ## Function design at a glance
 
@@ -12,7 +11,7 @@ hides mechanics behind a useful abstraction,
 exposes every real dependency and result,
 and creates a boundary that focused tests can trust.
 
-The tree below is a human orientation to the rules in `function-design-v2`. The skill files are the source of truth.
+The tree below is a human orientation to the rules in `function-design`. The skill files are the source of truth.
 
 ```text
 Functions manage human complexity

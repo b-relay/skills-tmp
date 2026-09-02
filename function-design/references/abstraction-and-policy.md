@@ -1,6 +1,6 @@
 # Abstraction and policy
 
-Use this reference when the code lacks a useful boundary, a function mixes conceptual levels, or several functions repeat one policy.
+Use this reference when you need to sketch a call before its implementation exists, a function mixes conceptual levels, or several functions repeat one policy.
 
 ## Write the call you want to exist
 
@@ -10,15 +10,13 @@ When the caller's next operation is clear but the implementation is not, sketch 
 config = load_config(config_path())
 ```
 
-The missing functions reveal missing boundaries. The sketch is not a finished contract. It still needs types, ownership, failure, and effect decisions.
+The missing functions reveal missing boundaries. The same move unblocks a hard step. If a particle update needs a reflected velocity and the formula is not at hand, write `velocity = find_bounce_vector(velocity, surface_normal)` and finish the update. The math gets its own function, its own tests, and its own time.
 
-A function is worth considering on its first coherent occurrence. Extraction does not need to wait for duplication. Extract when the name creates useful vocabulary, isolates a contract, or creates a test seam. Keep code inline when a helper only renames obvious syntax.
+Consider a function on its first coherent occurrence. Extract when the name creates useful vocabulary, isolates a contract, or gives tests a direct entry point. Keep code inline when a helper only renames obvious syntax.
 
-Pair extraction with pruning. A helper that was useful during discovery may become a pass-through wrapper after a standard algorithm or a better data abstraction owns the work.
+Pair extraction with pruning. A helper that was useful during discovery can become a pass-through wrapper once a trusted algorithm or a better data abstraction owns the work.
 
-**Check:** Does the boundary reduce what the caller or implementer must hold in mind?
-
-## Keep peer operations at one conceptual depth
+## Keep peer operations at one conceptual level
 
 Outline the body before moving code. Replace every executable block with an action phrase and indent mechanics beneath the action they implement.
 
@@ -37,22 +35,18 @@ Compare record kind
 
 One conceptual level is contextual:
 
-- arithmetic belongs in a low-level numeric helper but interrupts a high-level orchestration function;
-- a loop is appropriate inside the operation whose job is iteration;
-- a section comment may reveal a missing boundary, or it may explain a necessary invariant; and
-- calling a trusted algorithm and interpreting its result can remain one coherent operation.
+- Arithmetic belongs in a low-level numeric helper but interrupts a high-level orchestration function.
+- A loop is appropriate inside the operation whose job is iteration.
+- A section comment may reveal a missing boundary, or it may explain a necessary invariant.
+- Calling a trusted algorithm and interpreting its result can stay one coherent operation.
 
-Loops, long bodies, and section comments are review signals, not automatic violations.
-
-**Check:** Can every top-level statement be described as a peer step in the function's name?
+Loops, long bodies, and section comments are reasons to look, not automatic violations, and none of them moves a function to the full path.
 
 ## Prefer a trusted algorithm to hand-written machinery
 
-After extraction reveals a standard operation, use the project's trusted library implementation when its contract fits. This removes loop state, boundary conditions, and maintenance burden from the local function.
+Once extraction reveals a standard operation, use the trusted algorithm when its contract fits. This removes loop state, boundary conditions, and maintenance burden from the local function. Hand-written search loops hide off-by-one and stale-variable bugs that survive repeated reading.
 
-Keep result interpretation beside the algorithm when both belong to the same conceptual operation. Do not create one custom helper per line merely to make the body look uniform.
-
-**Check:** Does custom control flow still encode domain policy, or is it recreating a tested general algorithm?
+Keep result interpretation beside the algorithm when both belong to the same conceptual operation. One custom helper per line is not the goal.
 
 ## Move repeated policy to one owner
 
@@ -78,6 +72,8 @@ function is_record_of_kind(name, kind):
     return record.kind == kind
 ```
 
+Returning `false` merges "missing" with "wrong kind." That is correct only when every caller wants one negative answer.
+
 Then inspect sibling operations. If insertion and lookup both repeat case normalization and ordering, the missing abstraction is not another helper. It is a case-insensitive index that owns normalization, storage, insertion, and lookup.
 
 ```text
@@ -86,24 +82,4 @@ function is_record_of_kind(name, kind):
     return record exists and record.kind == kind
 ```
 
-Once the index owns the policy, a transitional `find_record` wrapper may add no vocabulary or contract and should be deleted. The index needs its own contract tests for normalization, insertion, misses, text policy, and lifetime. Those tests should remain valid if its storage changes from sorted data to hashing.
-
-This refactor sequence matters:
-
-1. Outline behavior to expose mixed levels and hidden outcomes.
-2. Extract a coherent operation so callers stop carrying its mechanics.
-3. Replace hand-written general machinery with a trusted algorithm.
-4. Search sibling producers and consumers for repeated policy.
-5. Move the policy to one owner.
-6. Remove wrappers made redundant by the deeper owner.
-
-**Check:** Can normalization, ordering, lookup, or validation policy change in exactly one implementation without coordinated edits?
-
-## Preserve caller-visible behavior during refactoring
-
-Before changing a boundary, identify callers that depend on mutation, ordering, error distinctions, allocation, timing, or borrowed lifetime. A cleaner local function is not an improvement if it silently changes a relied-on contract.
-
-When behavior must change, make that change explicit in the task, update callers, and test the new contract. When behavior must stay stable, add characterization tests before moving the boundary if existing tests do not protect it.
-
-**Check:** Do tests prove the behavior the task intends to preserve, including non-return-value channels?
-
+Once the index owns the policy, the transitional `find_record` wrapper adds no vocabulary or contract, so delete it. The index needs its own contract tests for normalization, insertion, misses, text policy, and lifetime. Those tests should stay valid if its storage changes from sorted data to hashing. Encapsulation moves the proof obligation. It does not remove it.
