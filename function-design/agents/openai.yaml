@@ -1,4 +1,4 @@
 interface:
-  display_name: "Function Design v2"
+  display_name: "Function Design"
   short_description: "Write functions with honest, exact, testable contracts"
   default_prompt: "Use $function-design while writing or reviewing this code so every function has an honest, exact, testable contract."
