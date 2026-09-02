@@ -5,11 +5,13 @@ description: Function design with an honest, exact, testable contract. Use when 
 
 # Function design
 
-Functions exist to manage complexity for limited reasoners, human or agent. A well-designed function supports local reasoning, so a caller understands the operation without reading the body. It supports abstraction, so an implementer understands the body without searching the codebase. It supports testing, so a test controls the operation through its signature. Reuse is secondary, and one occurrence can justify a function. Three rules settle most decisions, and [the summary](references/summary.md) lists every rule on one screen when you need the whole set at once:
+Functions exist to manage complexity for limited reasoners, human or agent. A well-designed function supports local reasoning, so a caller understands the operation without reading the body. It supports abstraction, so an implementer understands the body without searching the codebase. It supports testing, so a test controls the operation through its signature. Reuse is secondary, and one occurrence can justify a function. Three rules settle most decisions:
 
 1. Build the system from honest functions and put contact with the outside world in an effect owner. A function is **honest** when its signature shows every behavior-affecting dependency and every observable channel, including authorized mutation, results, effects, and failures. A caller can then predict the call from the signature, and a test can substitute or control each one. Honesty is not purity. `sort(range)` is honest and `get_time()` is not. A passed clock or client keeps a function honest only while the provider's effects, blocking, and failures are part of the stated contract. A dishonest function still abstracts an implementation and can be reused, but a caller cannot predict it from the call alone, and an isolated test cannot control it through the signature. Effect owners such as `main` or a request handler are dishonest by design, so everything below them can stay honest.
 2. Make the contract ask for what the body needs and a real caller can supply, and return every distinction the caller acts on.
 3. Keep the top-level statements of a body at one conceptual level. Mechanics belong behind a named function, a trusted algorithm, or a type that owns the policy.
+
+When you need every rule on one screen, before or after the steps, read [the summary](references/summary.md).
 
 ## Scope
 
